@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Bookmark Manager | مدیریت بوکمارک‌ها</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <!-- پس‌زمینهٔ متحرک (شناور) -->
+  <div class="bg-animation">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+  </div>
+
+  <!-- بخش ورود -->
+  <div id="loginScreen" class="screen active">
+    <div class="glass-card login-card">
+      <div class="card-icon">🔐</div>
+      <h2>ورود به بوکمارک‌ها</h2>
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="username" placeholder="نام کاربری" value="admin">
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="رمز عبور" value="admin123">
+      </div>
+      <button id="loginBtn" class="btn-primary"><i class="fas fa-sign-in-alt"></i> ورود</button>
+      <div id="loginError" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- بخش اصلی اپلیکیشن -->
+  <div id="appScreen" class="screen">
+    <!-- هدر -->
+    <header class="app-header">
+      <h1><i class="fas fa-bookmark"></i> بوکمارک‌های من</h1>
+      <div class="header-actions">
+        <button id="themeToggle" class="icon-btn" title="تغییر تم"><i class="fas fa-moon"></i></button>
+        <button id="logoutBtn" class="icon-btn" title="خروج"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </header>
+
+    <!-- جستجو -->
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="جستجو در بوکمارک‌ها...">
+    </div>
+
+    <!-- لیست بوکمارک‌ها -->
+    <div id="bookmarkList" class="bookmark-grid"></div>
+
+    <!-- دکمهٔ شناور افزودن -->
+    <button id="addBtn" class="fab" title="افزودن بوکمارک جدید"><i class="fas fa-plus"></i></button>
+  </div>
+
+  <!-- مدال افزودن/ویرایش -->
+  <div id="bookmarkModal" class="modal-overlay">
+    <div class="glass-card modal-content">
+      <h3 id="modalTitle">افزودن بوکمارک جدید</h3>
+      <div class="input-group">
+        <i class="fas fa-link"></i>
+        <input type="text" id="urlInput" placeholder="آدرس (مثال: example.com)">
+      </div>
+      <div class="input-group">
+        <i class="fas fa-heading"></i>
+        <input type="text" id="titleInput" placeholder="عنوان (اختیاری)">
+      </div>
+      <input type="hidden" id="editId" value="">
+      <div class="modal-buttons">
+        <button id="saveBookmarkBtn" class="btn-primary"><i class="fas fa-save"></i> ذخیره</button>
+        <button id="cancelModalBtn" class="btn-secondary">لغو</button>
+      </div>
+      <div id="formError" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- مدال تأیید حذف -->
+  <div id="deleteModal" class="modal-overlay">
+    <div class="glass-card modal-content confirm-modal">
+      <h3><i class="fas fa-trash-alt"></i> حذف بوکمارک</h3>
+      <p>آیا از حذف این بوکمارک مطمئن هستید؟</p>
+      <div class="modal-buttons">
+        <button id="confirmDeleteBtn" class="btn-danger">بله، حذف کن</button>
+        <button id="cancelDeleteBtn" class="btn-secondary">لغو</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
