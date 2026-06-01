@@ -14,10 +14,17 @@ require_once __DIR__ . '/helpers.php';
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-// مسیر API ما: /api/bookmarks
-if ($requestUri === '/api/bookmarks' || $requestUri === '/api/bookmarks/') {
+// مسیر احراز هویت
+if ($requestUri === '/api/auth' || $requestUri === '/api/auth/') {
+    require_once __DIR__ . '/auth.php';
+    handleAuth($requestMethod);
+}
+// مسیر بوکمارک‌ها (محافظت‌شده)
+elseif ($requestUri === '/api/bookmarks' || $requestUri === '/api/bookmarks/') {
+    authenticate(); // ← اضافه شدن احراز هویت
     require_once __DIR__ . '/bookmarks.php';
     handleBookmarks($requestMethod);
-} else {
+}
+else {
     jsonResponse(['error' => 'Not Found'], 404);
 }
