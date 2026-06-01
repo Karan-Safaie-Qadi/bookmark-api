@@ -12,6 +12,13 @@ function getJsonInput(): array {
 }
 
 function validateUrl(string $url): bool {
+    // نرمال‌سازی اولیه
+    $url = trim($url);
+    $url = str_replace('\\', '/', $url); // بک‌اسلش به اسلش
+    // اگر پروتکل نداشت، پیش‌فرض https:// اضافه کن و دوباره چک کن
+    if (!preg_match('#^https?://#i', $url)) {
+        $url = 'https://' . $url;
+    }
     return filter_var($url, FILTER_VALIDATE_URL) !== false;
 }
 function authenticate(): void {
@@ -29,4 +36,12 @@ function authenticate(): void {
     if (!$row || strtotime($row['expires_at']) < time()) {
         jsonResponse(['error' => 'Invalid or expired token'], 401);
     }
+}
+function sanitizeUrl(string $url): string {
+    $url = trim($url);
+    $url = str_replace('\\', '/', $url);
+    if (!preg_match('#^https?://#i', $url)) {
+        $url = 'https://' . $url;
+    }
+    return $url;
 }

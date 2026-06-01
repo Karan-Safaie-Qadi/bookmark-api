@@ -1,257 +1,373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مدیریت بوکمارک‌ها</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Tahoma, sans-serif; background: #f0f2f5; padding: 20px; max-width: 700px; margin: auto; }
-    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    h2 { color: #333; margin-bottom: 15px; }
-    .form-group { margin-bottom: 12px; }
-    label { display: block; margin-bottom: 4px; color: #555; }
-    input, button { width: 100%; padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; }
-    button { background: #007bff; color: white; border: none; cursor: pointer; margin-top: 8px; }
-    button:hover { background: #0056b3; }
-    .error { color: #d9534f; margin: 10px 0; }
-    .success { color: #5cb85c; margin: 10px 0; }
-    #logoutBtn { background: #6c757d; }
-    #logoutBtn:hover { background: #5a6268; }
-    .bookmark-item { background: #f8f9fa; border: 1px solid #ddd; padding: 12px; margin-bottom: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
-    .bookmark-info a { color: #007bff; text-decoration: none; }
-    .bookmark-info a:hover { text-decoration: underline; }
-    .bookmark-actions button { width: auto; margin-left: 5px; padding: 5px 10px; font-size: 0.9rem; }
-    hr { margin: 25px 0; }
-    #loginSection, #appSection { display: none; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <!-- بخش ورود -->
-    <div id="loginSection">
-      <h2>🔐 ورود به سیستم</h2>
-      <div class="form-group">
-        <label>نام کاربری</label>
-        <input type="text" id="username" value="admin" placeholder="admin">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مدیریت بوکمارک‌ها</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Tahoma, sans-serif;
+        background: #f0f2f5;
+        padding: 20px;
+        max-width: 700px;
+        margin: auto;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #333;
+        margin-bottom: 15px;
+      }
+      .form-group {
+        margin-bottom: 12px;
+      }
+      label {
+        display: block;
+        margin-bottom: 4px;
+        color: #555;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .error {
+        color: #d9534f;
+        margin: 10px 0;
+      }
+      .success {
+        color: #5cb85c;
+        margin: 10px 0;
+      }
+      #logoutBtn {
+        background: #6c757d;
+      }
+      #logoutBtn:hover {
+        background: #5a6268;
+      }
+      .bookmark-item {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .bookmark-info a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .bookmark-info a:hover {
+        text-decoration: underline;
+      }
+      .bookmark-actions button {
+        width: auto;
+        margin-left: 5px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+      }
+      hr {
+        margin: 25px 0;
+      }
+      #loginSection,
+      #appSection {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- بخش ورود -->
+      <div id="loginSection">
+        <h2>🔐 ورود به سیستم</h2>
+        <div class="form-group">
+          <label>نام کاربری</label>
+          <input type="text" id="username" value="admin" placeholder="admin" />
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input
+            type="password"
+            id="password"
+            value="admin123"
+            placeholder="admin123"
+          />
+        </div>
+        <button onclick="login()">ورود</button>
+        <div id="loginError" class="error"></div>
       </div>
-      <div class="form-group">
-        <label>رمز عبور</label>
-        <input type="password" id="password" value="admin123" placeholder="admin123">
+
+      <!-- بخش اصلی برنامه (بعد از ورود) -->
+      <div id="appSection">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h2>🔖 بوکمارک‌های من</h2>
+          <button id="logoutBtn" onclick="logout()">🚪 خروج</button>
+        </div>
+
+        <!-- جستجو -->
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="جستجو در عنوان..."
+          oninput="loadBookmarks()"
+        />
+
+        <!-- لیست -->
+        <div id="bookmarkList">در حال بارگذاری...</div>
+
+        <hr />
+
+        <!-- فرم افزودن / ویرایش -->
+        <h3 id="formTitle">افزودن بوکمارک جدید</h3>
+        <div class="form-group">
+          <label>آدرس (URL)</label>
+          <input type="url" id="urlInput" placeholder="https://example.com" />
+        </div>
+        <div class="form-group">
+          <label>عنوان</label>
+          <input type="text" id="titleInput" placeholder="عنوان دلخواه" />
+        </div>
+        <input type="hidden" id="editId" value="" />
+        <button onclick="saveBookmark()">💾 ذخیره</button>
+        <button style="background: #6c757d" onclick="resetForm()">✖ لغو</button>
+        <div id="formError" class="error"></div>
       </div>
-      <button onclick="login()">ورود</button>
-      <div id="loginError" class="error"></div>
     </div>
 
-    <!-- بخش اصلی برنامه (بعد از ورود) -->
-    <div id="appSection">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>🔖 بوکمارک‌های من</h2>
-        <button id="logoutBtn" onclick="logout()">🚪 خروج</button>
-      </div>
+    <script>
+      const API_BASE = "http://localhost:8000/api";
 
-      <!-- جستجو -->
-      <input type="text" id="searchInput" placeholder="جستجو در عنوان..." oninput="loadBookmarks()">
-
-      <!-- لیست -->
-      <div id="bookmarkList">در حال بارگذاری...</div>
-
-      <hr>
-
-      <!-- فرم افزودن / ویرایش -->
-      <h3 id="formTitle">افزودن بوکمارک جدید</h3>
-      <div class="form-group">
-        <label>آدرس (URL)</label>
-        <input type="url" id="urlInput" placeholder="https://example.com">
-      </div>
-      <div class="form-group">
-        <label>عنوان</label>
-        <input type="text" id="titleInput" placeholder="عنوان دلخواه">
-      </div>
-      <input type="hidden" id="editId" value="">
-      <button onclick="saveBookmark()">💾 ذخیره</button>
-      <button style="background:#6c757d" onclick="resetForm()">✖ لغو</button>
-      <div id="formError" class="error"></div>
-    </div>
-  </div>
-
-  <script>
-    const API_BASE = 'http://localhost:8000/api';
-
-    // ---------- مدیریت نشست (توکن) ----------
-    function getToken() {
-      return localStorage.getItem('api_token');
-    }
-
-    function setToken(token) {
-      localStorage.setItem('api_token', token);
-    }
-
-    function clearToken() {
-      localStorage.removeItem('api_token');
-    }
-
-    async function apiFetch(url, options = {}) {
-      const token = getToken();
-      if (!token) {
-        showLogin();
-        throw new Error('لطفاً ابتدا وارد شوید');
+      // ---------- مدیریت نشست (توکن) ----------
+      function getToken() {
+        return localStorage.getItem("api_token");
       }
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-        ...options.headers
-      };
-      const res = await fetch(url, { ...options, headers });
-      if (res.status === 401) {
-        clearToken();
-        showLogin();
-        throw new Error('نشست منقضی شد. لطفاً دوباره وارد شوید');
+
+      function setToken(token) {
+        localStorage.setItem("api_token", token);
       }
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'خطای سرور');
+
+      function clearToken() {
+        localStorage.removeItem("api_token");
       }
-      return res.json();
-    }
+      function normalizeUrl(input) {
+        let url = input.trim();
+        // جایگزینی بک‌اسلش با اسلش
+        url = url.replace(/\\/g, "/");
+        // اگر پروتکل ندارد، https:// اضافه کن
+        if (!/^https?:\/\//i.test(url)) {
+          url = "https://" + url;
+        }
+        return url;
+      }
 
-    // ---------- رابط کاربری (ورود/خروج) ----------
-    function showLogin() {
-      document.getElementById('loginSection').style.display = 'block';
-      document.getElementById('appSection').style.display = 'none';
-    }
-
-    function showApp() {
-      document.getElementById('loginSection').style.display = 'none';
-      document.getElementById('appSection').style.display = 'block';
-      loadBookmarks();
-    }
-
-    async function login() {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorDiv = document.getElementById('loginError');
-      errorDiv.textContent = '';
-
-      try {
-        const res = await fetch(`${API_BASE}/auth`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
+      async function apiFetch(url, options = {}) {
+        const token = getToken();
+        if (!token) {
+          showLogin();
+          throw new Error("لطفاً ابتدا وارد شوید");
+        }
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+          ...options.headers,
+        };
+        const res = await fetch(url, { ...options, headers });
+        if (res.status === 401) {
+          clearToken();
+          showLogin();
+          throw new Error("نشست منقضی شد. لطفاً دوباره وارد شوید");
+        }
         if (!res.ok) {
           const err = await res.json();
-          throw new Error(err.error || 'ورود ناموفق');
+          throw new Error(err.error || "خطای سرور");
         }
-        const data = await res.json();
-        setToken(data.token);
-        showApp();
-      } catch (err) {
-        errorDiv.textContent = err.message;
+        return res.json();
       }
-    }
 
-    function logout() {
-      clearToken();
-      showLogin();
-      document.getElementById('bookmarkList').innerHTML = '';
-    }
-
-    // ---------- عملیات بوکمارک‌ها ----------
-    async function loadBookmarks() {
-      const q = document.getElementById('searchInput').value.trim();
-      const url = q ? `${API_BASE}/bookmarks?q=${encodeURIComponent(q)}` : `${API_BASE}/bookmarks`;
-      try {
-        const data = await apiFetch(url);
-        renderList(data);
-      } catch (err) {
-        document.getElementById('bookmarkList').innerHTML = `<p class="error">${err.message}</p>`;
+      // ---------- رابط کاربری (ورود/خروج) ----------
+      function showLogin() {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("appSection").style.display = "none";
       }
-    }
 
-    function renderList(bookmarks) {
-      const container = document.getElementById('bookmarkList');
-      if (!bookmarks.length) {
-        container.innerHTML = '<p>هیچ بوکمارکی یافت نشد.</p>';
-        return;
+      function showApp() {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("appSection").style.display = "block";
+        loadBookmarks();
       }
-      container.innerHTML = bookmarks.map(b => `
+
+      async function login() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const errorDiv = document.getElementById("loginError");
+        errorDiv.textContent = "";
+
+        try {
+          const res = await fetch(`${API_BASE}/auth`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || "ورود ناموفق");
+          }
+          const data = await res.json();
+          setToken(data.token);
+          showApp();
+        } catch (err) {
+          errorDiv.textContent = err.message;
+        }
+      }
+
+      function logout() {
+        clearToken();
+        showLogin();
+        document.getElementById("bookmarkList").innerHTML = "";
+      }
+
+      // ---------- عملیات بوکمارک‌ها ----------
+      async function loadBookmarks() {
+        const q = document.getElementById("searchInput").value.trim();
+        const url = q
+          ? `${API_BASE}/bookmarks?q=${encodeURIComponent(q)}`
+          : `${API_BASE}/bookmarks`;
+        try {
+          const data = await apiFetch(url);
+          renderList(data);
+        } catch (err) {
+          document.getElementById("bookmarkList").innerHTML =
+            `<p class="error">${err.message}</p>`;
+        }
+      }
+
+      function renderList(bookmarks) {
+        const container = document.getElementById("bookmarkList");
+        if (!bookmarks.length) {
+          container.innerHTML = "<p>هیچ بوکمارکی یافت نشد.</p>";
+          return;
+        }
+        container.innerHTML = bookmarks
+          .map(
+            (b) => `
         <div class="bookmark-item">
           <div class="bookmark-info">
             <a href="${b.url}" target="_blank">${escapeHtml(b.title)}</a><br>
-            <small>${new Date(b.created_at).toLocaleString('fa-IR')}</small>
+            <small>${new Date(b.created_at).toLocaleString("fa-IR")}</small>
           </div>
           <div class="bookmark-actions">
             <button onclick="editBookmark(${b.id}, '${escapeHtml(b.url)}', '${escapeHtml(b.title)}')">✏️</button>
             <button onclick="deleteBookmark(${b.id})">🗑️</button>
           </div>
         </div>
-      `).join('');
-    }
-
-    function escapeHtml(text) {
-      return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    async function saveBookmark() {
-      const id = document.getElementById('editId').value;
-      const urlVal = document.getElementById('urlInput').value.trim();
-      const title = document.getElementById('titleInput').value.trim();
-      const errorDiv = document.getElementById('formError');
-      errorDiv.textContent = '';
-
-      if (!urlVal) {
-        errorDiv.textContent = 'لطفاً آدرس را وارد کنید';
-        return;
+      `,
+          )
+          .join("");
       }
 
-      const payload = { url: urlVal, title };
-      const method = id ? 'PUT' : 'POST';
-      const endpoint = id ? `${API_BASE}/bookmarks?id=${id}` : `${API_BASE}/bookmarks`;
-
-      try {
-        await apiFetch(endpoint, {
-          method,
-          body: JSON.stringify(payload)
-        });
-        resetForm();
-        loadBookmarks();
-      } catch (err) {
-        errorDiv.textContent = err.message;
+      function escapeHtml(text) {
+        return text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
       }
-    }
 
-    function editBookmark(id, url, title) {
-      document.getElementById('editId').value = id;
-      document.getElementById('urlInput').value = url;
-      document.getElementById('titleInput').value = title;
-      document.getElementById('formTitle').textContent = 'ویرایش بوکمارک';
-    }
+      async function saveBookmark() {
+        const id = document.getElementById("editId").value;
+        const title = document.getElementById("titleInput").value.trim();
+        const errorDiv = document.getElementById("formError");
+        const rawUrl = document.getElementById("urlInput").value.trim();
+        const urlVal = normalizeUrl(rawUrl);
+        errorDiv.textContent = "";
 
-    function resetForm() {
-      document.getElementById('editId').value = '';
-      document.getElementById('urlInput').value = '';
-      document.getElementById('titleInput').value = '';
-      document.getElementById('formTitle').textContent = 'افزودن بوکمارک جدید';
-      document.getElementById('formError').textContent = '';
-    }
+        if (!urlVal) {
+          errorDiv.textContent = "لطفاً آدرس را وارد کنید";
+          return;
+        }
 
-    async function deleteBookmark(id) {
-      if (!confirm('آیا از حذف این بوکمارک مطمئن هستید؟')) return;
-      try {
-        await apiFetch(`${API_BASE}/bookmarks?id=${id}`, { method: 'DELETE' });
-        loadBookmarks();
-      } catch (err) {
-        alert(err.message);
+        const payload = { url: urlVal, title };
+        const method = id ? "PUT" : "POST";
+        const endpoint = id
+          ? `${API_BASE}/bookmarks?id=${id}`
+          : `${API_BASE}/bookmarks`;
+
+        try {
+          await apiFetch(endpoint, {
+            method,
+            body: JSON.stringify(payload),
+          });
+          resetForm();
+          loadBookmarks();
+        } catch (err) {
+          errorDiv.textContent = err.message;
+        }
       }
-    }
 
-    // بارگذاری اولیه
-    if (getToken()) {
-      showApp();
-    } else {
-      showLogin();
-    }
-  </script>
-</body>
+      function editBookmark(id, url, title) {
+        document.getElementById("editId").value = id;
+        document.getElementById("urlInput").value = url;
+        document.getElementById("titleInput").value = title;
+        document.getElementById("formTitle").textContent = "ویرایش بوکمارک";
+      }
+
+      function resetForm() {
+        document.getElementById("editId").value = "";
+        document.getElementById("urlInput").value = "";
+        document.getElementById("titleInput").value = "";
+        document.getElementById("formTitle").textContent =
+          "افزودن بوکمارک جدید";
+        document.getElementById("formError").textContent = "";
+      }
+
+      async function deleteBookmark(id) {
+        if (!confirm("آیا از حذف این بوکمارک مطمئن هستید؟")) return;
+        try {
+          await apiFetch(`${API_BASE}/bookmarks?id=${id}`, {
+            method: "DELETE",
+          });
+          loadBookmarks();
+        } catch (err) {
+          alert(err.message);
+        }
+      }
+
+      // بارگذاری اولیه
+      if (getToken()) {
+        showApp();
+      } else {
+        showLogin();
+      }
+    </script>
+  </body>
 </html>

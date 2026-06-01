@@ -16,7 +16,7 @@ function handleBookmarks(string $method): void
         jsonResponse($bookmarks);
     } elseif ($method === 'POST') {
         $input = getJsonInput();
-        $url = $input['url'] ?? '';
+        $url = sanitizeUrl($input['url'] ?? '');
         $title = $input['title'] ?? '';
 
         // اعتبارسنجی
@@ -44,41 +44,44 @@ function handleBookmarks(string $method): void
         }
         jsonResponse(['message' => 'Bookmark deleted successfully']);
     } elseif ($method === 'PUT') {
-        if (!$id || !is_numeric($id)) {
-            jsonResponse(['error' => 'Missing or invalid id parameter'], 400);
-        }
-        $input = getJsonInput();
-        $url = $input['url'] ?? null;
-        $title = $input['title'] ?? null;
+    if (!$id || !is_numeric($id)) {
+        jsonResponse(['error' => 'Missing or invalid id parameter'], 400);
+    }
+    $input = getJsonInput();
+    $url = $input['url'] ?? null;
+    $title = $input['title'] ?? null;
 
-        $fields = [];
-        $params = ['id' => (int) $id];
+    $fields = [];
+    $params = ['id' => (int) $id];
 
-        if ($url !== null) {
-            if (!validateUrl($url)) {
-                jsonResponse(['error' => 'Invalid URL'], 400);
-            }
-            $fields[] = 'url = :url';
-            $params['url'] = $url;
+    if ($url !== null) {
+        $url = sanitizeUrl($url);          // ← نرمال‌سازی
+        if (!validateUrl($url)) {          // ← اعتبارسنجی
+            jsonResponse(['error' => 'Invalid URL'], 400);
         }
-        if ($title !== null) {
-            $title = trim($title);
-            $fields[] = 'title = :title';
-            $params['title'] = $title;
-        }
-        if (empty($fields)) {
-            jsonResponse(['error' => 'No fields to update'], 400);
-        }
+        $fields[] = 'url = :url';
+        $params['url'] = $url;
+    }
 
-        $stmt = $db->prepare('UPDATE bookmarks SET ' . implode(', ', $fields) . ' WHERE id = :id');
-        $stmt->execute($params);
-        if ($stmt->rowCount() === 0) {
-            jsonResponse(['error' => 'Bookmark not found or no changes'], 404);
-        }
-        $updated = $db->prepare('SELECT * FROM bookmarks WHERE id = ?');
-        $updated->execute([(int) $id]);
-        jsonResponse($updated->fetch());
-    } else {
+    if ($title !== null) {
+        $title = trim($title);
+        $fields[] = 'title = :title';
+        $params['title'] = $title;
+    }
+
+    if (empty($fields)) {
+        jsonResponse(['error' => 'No fields to update'], 400);
+    }
+
+    $stmt = $db->prepare('UPDATE bookmarks SET ' . implode(', ', $fields) . ' WHERE id = :id');
+    $stmt->execute($params);
+    if ($stmt->rowCount() === 0) {
+        jsonResponse(['error' => 'Bookmark not found or no changes'], 404);
+    }
+    $updated = $db->prepare('SELECT * FROM bookmarks WHERE id = ?');
+    $updated->execute([(int) $id]);
+    jsonResponse($updated->fetch());
+} else {
         jsonResponse(['error' => 'Method Not Allowed'], 405);
     }
 }
