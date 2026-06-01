@@ -43,19 +43,7 @@
 
 ---
 
-<div dir="rtl" align="right">
 
-## 🚀 پیش‌نمایش
-
-</div>
-
-| صفحه ورود           | داشبورد اصلی      |
-| ------------------- | ----------------- |
-| *(تصویر صفحه ورود)* | *(تصویر داشبورد)* |
-
-
-
----
 
 <div dir="rtl" align="right">
 
@@ -167,15 +155,6 @@ The project demonstrates practical backend development concepts such as **CRUD o
 
 ---
 
-## 🚀 Preview
-
-| Login Page           | Main Dashboard                     |
-| -------------------- | ---------------------------------- |
-| *(Login Screenshot)* | *(Bookmarks Dashboard Screenshot)* |
-
-> Place your screenshots inside the `screenshots/` directory.
-
----
 
 ## 📂 Project Structure
 
