@@ -14,3 +14,19 @@ function getJsonInput(): array {
 function validateUrl(string $url): bool {
     return filter_var($url, FILTER_VALIDATE_URL) !== false;
 }
+function authenticate(): void {
+    $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    if (!preg_match('/^Bearer\s+(.+)$/i', $authHeader, $matches)) {
+        jsonResponse(['error' => 'Authorization token required'], 401);
+    }
+
+    $token = $matches[1];
+    $db = getDB();
+    $stmt = $db->prepare('SELECT id, expires_at FROM api_tokens WHERE token = :token');
+    $stmt->execute(['token' => $token]);
+    $row = $stmt->fetch();
+
+    if (!$row || strtotime($row['expires_at']) < time()) {
+        jsonResponse(['error' => 'Invalid or expired token'], 401);
+    }
+}
