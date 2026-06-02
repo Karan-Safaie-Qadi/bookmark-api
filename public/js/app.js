@@ -173,6 +173,8 @@ function renderBookmarks(bookmarks) {
     return;
   }
 
+  
+
   bookmarkList.innerHTML = bookmarks.map(b => `
     <div class="bookmark-card">
       <div>

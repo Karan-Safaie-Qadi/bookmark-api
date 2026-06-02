@@ -15,3 +15,4 @@ function getDB(): PDO {
     ];
     return new PDO($dsn, $user, $pass, $options);
 }
+
